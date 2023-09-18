@@ -5,48 +5,27 @@ class Board {
         this.alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         this.board = [];
 
-        this.setTiles(this.alphabet);
+        this.board = this.alphabet.split("");
     }
 
-    setTiles(tileValues) {
-        let tileIndex = 0;
-        this.board = [];
-        for (let r = 0; r < this.sizeY; r++) {
-            this.board.push([]);
-            for (let c = 0; c < this.sizeX; c++) {
-                if (tileIndex === 0 && tileValues === this.alphabet) {
-                    this.board[r].push('0');
-                } else {
-                    if (tileValues === this.alphabet) {
-                        this.board[r].push(tileValues.charAt(tileIndex - 1));
-                    } else {
-                        this.board[r].push(tileValues.charAt(tileIndex));
-                    }
-                }
-                tileIndex++;
-            }
-        }
-    }
-
-    boardTileValuesInOrder() {
-        let boardTileValuesInOrder = "";
-        for (let r = 0; r < this.sizeY; r++) {
-            for (let c = 0; c < this.sizeX; c++) {
-                boardTileValuesInOrder += this.board[r][c];
-            }
-        }
-        //console.log(boardTileValuesInOrder)
-        return boardTileValuesInOrder;
+    getBoardString() {
+        return this.board.toString();
     }
 
     mix() {
-        const tileOrderValues = this.boardTileValuesInOrder();
-        const newTileOrderValues = randomizeString(tileOrderValues);
-        this.setTiles(newTileOrderValues);
+      const tileOrderValues = this.board;
+      const newTileOrderValues = randomize(tileOrderValues);
+      //this.setTiles(newTileOrderValues);
+
+      newTileOrderValues.forEach(tile => {
+        $("#tileNr_"+tile).prependTo("#grid");
+        
+      });
+      this.board = newTileOrderValues;
     }
 
     move(tileToMove) {
-        const tileOrderValues = this.boardTileValuesInOrder();
+        const tileOrderValues = this.board;
         const tileToMoveIndex = tileOrderValues.indexOf(tileToMove);
         const newTilePlacementIndex = tileOrderValues.indexOf('0');
 
@@ -84,38 +63,45 @@ class Board {
     }
 
     render() {
-        console.log("-----");
-        for (let r = 0; r < this.sizeY; r++) {
-            let currentRow = "";
-            for (let c = 0; c < this.sizeX; c++) {
-                currentRow += this.board[r][c] + " ";
-            }
-            console.log(currentRow);
+      var index = 0;
+      $('#grid').children().each(
+        function() {
+          if (index != 15) {
+            $(this).text("ABCDEFGHIJKLMNOPQRSTUVWXYZ"[index]);
+          } else {
+            $(this).text("");
+          }
+          index += 1;
         }
-        console.log("-----");
+      );
     }
 
     won() {
-        return (this.boardTileValuesInOrder() === this.alphabet.substring(0, this.boardTileValuesInOrder().length - 1) + "0");
+        return (this.board === this.alphabet.split("").slice(0, this.sizeX*this.sizeY).push("0"));
     }
 }
 
-function randomizeString(str) {
-  if (str.length === 0) {
-      return "";
+function randomize(list) {
+  if (list.length === 0) {
+      return [];
   }
-  const index = Math.floor(Math.random() * (str.length + 1));
-  const removedChar = str.charAt(index);
-  const leftOver = str.substring(0, index) + str.substring(index + 1);
-  const randomizedString = removedChar + randomizeString(leftOver);
+  const index = Math.floor(Math.random() * (list.length + 1));
+  const removedItem = list.slice(index, index+1);
+  const leftOver = list.slice(0, index).concat(list.slice(index + 1));
+  const randomizedString = removedItem.concat(randomize(leftOver));
   return randomizedString;
 }
 
-const board = new Board(4, 5);
-board.mix();
-board.render();
+const board = new Board(4, 4);
 
 function gen() {
-  board.move("A");
   board.render();
+}
+
+function gen2() {
+  board.mix()
+}
+
+function gen3() {
+  board.move("A")
 }
