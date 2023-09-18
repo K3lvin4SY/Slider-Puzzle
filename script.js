@@ -1,6 +1,7 @@
-const grid = document.querySelector('#grid');
+const statusBar = document.querySelector('#statusBar');
 const cells = document.querySelectorAll('.grid-cell');
 let emptyCellIndex = 15;
+const transitionTime = 250;
 
 // Add click event listeners to the neighbor cells
 cells.forEach((cell, index) => {
@@ -34,7 +35,7 @@ function slideCell(fromIndex, toIndex) {
   const xOffset = fromRect.left - toRect.left;
   const yOffset = fromRect.top - toRect.top;
 
-  fromCell.style.transition = 'transform 0.2s ease-in-out';
+  fromCell.style.transition = 'transform '+transitionTime+'ms ease-in-out';
 
   fromCell.style.transform = `translate(${-xOffset}px, ${-yOffset}px)`;
 
@@ -51,10 +52,10 @@ function slideCell(fromIndex, toIndex) {
     const temp = fromCell.textContent;
     fromCell.textContent = toCell.textContent;
     toCell.textContent = temp;
-  }, 200);
+  }, transitionTime);
 }
 
-function mix(lastIndex = null, timeToLive = 15) {
+function mix(lastIndex = null, timeToLive = 25) {
   if (timeToLive <= 0) {
     return;
   }
@@ -66,9 +67,10 @@ function mix(lastIndex = null, timeToLive = 15) {
   slideCell(tile, emptyCellIndex);
   lastIndex = emptyCellIndex;
   emptyCellIndex = tile;
+  checkForWin();
   setTimeout(function() {
     mix(lastIndex, timeToLive-1)
-  }, 200);
+  }, transitionTime);
 }
 
 function getAdjacentTilesByEmpty() {
@@ -84,44 +86,37 @@ function getAdjacentTilesByEmpty() {
 // win check
 cells.forEach((cell, index) => {
   cell.addEventListener('click', () => {
-    setTimeout(function() {
-      var gridList = []
-      cells.forEach((cell, index) => {
-        gridList.push(parseInt(cell.textContent))
-      });
-      //console.log(gridList)
-      for (let i = 0; i < gridList.length - 1; i++) {
-        if (isNaN(gridList[i]) && !(i == gridList.length-1 || i == 0)) {
-          grid.style.backgroundColor = "transparent";
-          return;
-        }
-        if (gridList[i] > gridList[i + 1]) {
-          grid.style.backgroundColor = "transparent";
-          return;
-        }
-        grid.style.backgroundColor = "green";
-      }
-    }, 200);
+    checkForWin();
   });
 });
-
-/*cells.forEach((cell, index) => {
-  cell.addEventListener('click', () => {
+function checkForWin() {
+  setTimeout(function() {
     var gridList = []
     cells.forEach((cell, index) => {
       gridList.push(parseInt(cell.textContent))
     });
-    console.log(gridList)
+    //console.log(gridList)
     for (let i = 0; i < gridList.length - 1; i++) {
-      if (gridList[i] == NaN && i != gridList.length-1) {
-        grid.style.backgroundColor = "transparent";
+      if (isNaN(gridList[i]) && !(i == gridList.length-1 || i == 0)) {
+        statusBar.style.backgroundColor = "#ff7676";
         return;
       }
-      if (!(gridList[i] == NaN && i == gridList.length-1) && gridList[i] > gridList[i + 1]) {
-        grid.style.backgroundColor = "transparent";
+      if (gridList[i] > gridList[i + 1]) {
+        statusBar.style.backgroundColor = "#ff7676";
         return;
       }
-      grid.style.backgroundColor = "green";
+      statusBar.style.backgroundColor = "#51ff5f";
     }
+  }, transitionTime);
+}
+
+// button animation
+const buttons = document.querySelectorAll('.tools button');
+buttons.forEach((button, index) => {
+  button.addEventListener('click', function() {
+    button.classList.add('clicked');
+    setTimeout(() => {
+      button.classList.remove('clicked');
+    }, 80);
   });
-});*/
+});
