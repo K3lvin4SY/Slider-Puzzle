@@ -3,35 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="main.css">
-  <script src="game.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <link rel="stylesheet" href="main.css">
+  <title>Sliding Puzzle</title>
 </head>
 <body>
   <button onclick="gen()">SETUP</button>
-  <button onclick="gen2()">MIX</button>
-  <button onclick="gen3()">MOVE</button>
+  <button onclick="mix()">MIX</button>
+  <button onclick="solve()">SOLVE</button>
+
   <div class="grid-container" id="grid">
-    <div id="tileNr_A" class="grid-item" data-x="0" data-y="0">1</div>
-    <div id="tileNr_B" class="grid-item" data-x="1" data-y="0">2</div>
-    <div id="tileNr_C" class="grid-item" data-x="2" data-y="0">3</div>
-    <div id="tileNr_D" class="grid-item" data-x="3" data-y="0">4</div>
-    <div id="tileNr_E" class="grid-item" data-x="0" data-y="1">5</div>
-    <div id="tileNr_F" class="grid-item" data-x="1" data-y="1">6</div>
-    <div id="tileNr_G" class="grid-item" data-x="2" data-y="1">7</div>
-    <div id="tileNr_H" class="grid-item" data-x="3" data-y="1">8</div>
-    <div id="tileNr_I" class="grid-item" data-x="0" data-y="2">9</div>
-    <div id="tileNr_J" class="grid-item" data-x="1" data-y="2">10</div>
-    <div id="tileNr_K" class="grid-item" data-x="2" data-y="2">11</div>
-    <div id="tileNr_L" class="grid-item" data-x="3" data-y="2">12</div>
-    <div id="tileNr_M" class="grid-item" data-x="0" data-y="3">13</div>
-    <div id="tileNr_N" class="grid-item" data-x="1" data-y="3">14</div>
-    <div id="tileNr_O" class="grid-item" data-x="2" data-y="3">15</div>
-    <div id="tileNr_P" class="grid-item empty" data-x="3" data-y="3">E</div>
-      <!-- Add more grid items -->
+    <div class="grid-cell" id="cell-0">1</div>
+    <div class="grid-cell" id="cell-1">2</div>
+    <div class="grid-cell" id="cell-2">3</div>
+    <div class="grid-cell" id="cell-3">4</div>
+    <div class="grid-cell" id="cell-4">5</div>
+    <div class="grid-cell" id="cell-5">6</div>
+    <div class="grid-cell" id="cell-6">7</div>
+    <div class="grid-cell" id="cell-7">8</div>
+    <div class="grid-cell" id="cell-8">9</div>
+    <div class="grid-cell" id="cell-9">10</div>
+    <div class="grid-cell" id="cell-10">11</div>
+    <div class="grid-cell" id="cell-11">12</div>
+    <div class="grid-cell" id="cell-12">13</div>
+    <div class="grid-cell" id="cell-13">14</div>
+    <div class="grid-cell" id="cell-14">15</div>
+    <div class="grid-cell" id="cell-15"></div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
-
