@@ -12,31 +12,49 @@
   <div class="wrapper">
   
     <div class="grid-container" id="grid">
-      <div class="grid-cell" id="cell-0">1</div>
-      <div class="grid-cell" id="cell-1">2</div>
-      <div class="grid-cell" id="cell-2">3</div>
-      <div class="grid-cell" id="cell-3">4</div>
-      <div class="grid-cell" id="cell-4">5</div>
-      <div class="grid-cell" id="cell-5">6</div>
-      <div class="grid-cell" id="cell-6">7</div>
-      <div class="grid-cell" id="cell-7">8</div>
-      <div class="grid-cell" id="cell-8">9</div>
-      <div class="grid-cell" id="cell-9">10</div>
-      <div class="grid-cell" id="cell-10">11</div>
-      <div class="grid-cell" id="cell-11">12</div>
-      <div class="grid-cell" id="cell-12">13</div>
-      <div class="grid-cell" id="cell-13">14</div>
-      <div class="grid-cell" id="cell-14">15</div>
-      <div class="grid-cell" id="cell-15"></div>
+      <div class="grid-tile" id="tile-0">1</div>
+      <div class="grid-tile" id="tile-1">2</div>
+      <div class="grid-tile" id="tile-2">3</div>
+      <div class="grid-tile" id="tile-3">4</div>
+      <div class="grid-tile" id="tile-4">5</div>
+      <div class="grid-tile" id="tile-5">6</div>
+      <div class="grid-tile" id="tile-6">7</div>
+      <div class="grid-tile" id="tile-7">8</div>
+      <div class="grid-tile" id="tile-8">9</div>
+      <div class="grid-tile" id="tile-9">10</div>
+      <div class="grid-tile" id="tile-10">11</div>
+      <div class="grid-tile" id="tile-11">12</div>
+      <div class="grid-tile" id="tile-12">13</div>
+      <div class="grid-tile" id="tile-13">14</div>
+      <div class="grid-tile" id="tile-14">15</div>
+      <div class="grid-tile" id="tile-15"></div>
     </div>
 
     <br>
 
     <h1>Tools</h1>
     <div class="tools">
-      <button onclick="gen()">SETUP</button>
-      <button onclick="mix()">MIX</button>
-      <button onclick="solve()">SOLVE</button>
+      <div class="button-tools">
+        <button onclick="gen()">SETUP</button>
+        <button onclick="mix()">MIX</button>
+        <button onclick="solve()">SOLVE</button>
+      </div>
+      <div class="slider-wrap">
+        <h2>Width</h2>
+        <input type="range" min="2" max="10" value="4" class="slider" id="board-width" onchange="changeBoardWidth(this.value)">
+      </div>
+      <div class="slider-wrap">
+        <h2>Height</h2>
+        <input type="range" min="2" max="10" value="4" class="slider" id="board-height" onchange="changeBoardHeight(this.value)">
+      </div>
+      <div class="slider-wrap">
+        <h2>Speed</h2>
+        <input type="range" min="0" max="1000" value="250" class="slider" id="board-speed" onchange="changeAnimationSpeed(this.value)">
+      </div>
+      <div class="slider-wrap">
+        <h2>Mix Amount</h2>
+        <input type="range" min="1" max="100" value="25" class="slider" id="mix-amount" onchange="changeMixAmount(this.value)">
+      </div>
     </div>
     <div id="statusBar">STATUS</div>
 

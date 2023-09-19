@@ -1,23 +1,35 @@
 const statusBar = document.querySelector('#statusBar');
-const cells = document.querySelectorAll('.grid-cell');
-let emptyCellIndex = 15;
-const transitionTime = 250;
+let emptyTileIndex = 15;
+var transitionTime = 250;
+var boardWidth = 4;
+var boardHeight = 4;
+var mixAmount = 25;
 
-// Add click event listeners to the neighbor cells
-cells.forEach((cell, index) => {
-  cell.addEventListener('click', () => {
-    if (areTilesAdjacent(index, emptyCellIndex)) {
-      slideCell(index, emptyCellIndex);
-      emptyCellIndex = index;
-    }
+function addEventListeners() {
+  // slide tile on click
+  $('#grid .grid-tile').each(function(index, tile) {
+    $(tile).on('click', function() {
+      if (areTilesAdjacent(index, emptyTileIndex)) {
+        slideTile(index, emptyTileIndex);
+        emptyTileIndex = index;
+      }
+    });
   });
-});
+
+  // win check
+  $('#grid .grid-tile').each(function(index, tile) {
+    $(tile).on('click', function() {
+      checkForWin();
+    });
+  });
+}
+addEventListeners();
 
 function areTilesAdjacent(index1, index2) {
-  const row1 = Math.floor(index1 / 4);
-  const col1 = index1 % 4;
-  const row2 = Math.floor(index2 / 4);
-  const col2 = index2 % 4;
+  const row1 = Math.floor(index1 / boardWidth);
+  const col1 = index1 % boardWidth;
+  const row2 = Math.floor(index2 / boardWidth);
+  const col2 = index2 % boardWidth;
 
   return (
     (Math.abs(row1 - row2) === 1 && col1 === col2) ||
@@ -25,37 +37,37 @@ function areTilesAdjacent(index1, index2) {
   );
 }
 
-function slideCell(fromIndex, toIndex) {
-  const fromCell = cells[fromIndex];
-  const toCell = cells[toIndex];
+function slideTile(fromIndex, toIndex) {
+  const fromTile = $('#grid .grid-tile').get(fromIndex);
+  const toTile = $('#grid .grid-tile').get(toIndex);
 
-  const fromRect = fromCell.getBoundingClientRect();
-  const toRect = toCell.getBoundingClientRect();
+  const fromRect = fromTile.getBoundingClientRect();
+  const toRect = toTile.getBoundingClientRect();
 
   const xOffset = fromRect.left - toRect.left;
   const yOffset = fromRect.top - toRect.top;
 
-  fromCell.style.transition = 'transform '+transitionTime+'ms ease-in-out';
+  fromTile.style.transition = 'transform '+transitionTime+'ms ease-in-out';
 
-  fromCell.style.transform = `translate(${-xOffset}px, ${-yOffset}px)`;
+  fromTile.style.transform = `translate(${-xOffset}px, ${-yOffset}px)`;
 
-  fromCell.style.pointerEvents = 'none';
+  fromTile.style.pointerEvents = 'none';
 
   setTimeout(() => {
-    fromCell.style.transition = '';
-    fromCell.style.transform = 'translate(0, 0)';
-    fromCell.style.left = '0';
-    fromCell.style.top = '0';
+    fromTile.style.transition = '';
+    fromTile.style.transform = 'translate(0, 0)';
+    fromTile.style.left = '0';
+    fromTile.style.top = '0';
 
-    fromCell.style.pointerEvents = 'auto';
+    fromTile.style.pointerEvents = 'auto';
 
-    const temp = fromCell.textContent;
-    fromCell.textContent = toCell.textContent;
-    toCell.textContent = temp;
+    const temp = fromTile.textContent;
+    fromTile.textContent = toTile.textContent;
+    toTile.textContent = temp;
   }, transitionTime);
 }
 
-function mix(lastIndex = null, timeToLive = 25) {
+function mix(lastIndex = null, timeToLive = mixAmount) {
   if (timeToLive <= 0) {
     return;
   }
@@ -64,9 +76,9 @@ function mix(lastIndex = null, timeToLive = 25) {
     tiles = tiles.filter(item => item !== lastIndex);
   }
   const tile =  tiles[Math.floor(Math.random() * tiles.length)];
-  slideCell(tile, emptyCellIndex);
-  lastIndex = emptyCellIndex;
-  emptyCellIndex = tile;
+  slideTile(tile, emptyTileIndex);
+  lastIndex = emptyTileIndex;
+  emptyTileIndex = tile;
   checkForWin();
   setTimeout(function() {
     mix(lastIndex, timeToLive-1)
@@ -75,25 +87,19 @@ function mix(lastIndex = null, timeToLive = 25) {
 
 function getAdjacentTilesByEmpty() {
   var tiles = [];
-  cells.forEach((cell, index) => {
-    if (areTilesAdjacent(index, emptyCellIndex)) {
+  $('#grid .grid-tile').each(function(index, tile) {
+    if (areTilesAdjacent(index, emptyTileIndex)) {
       tiles.push(index)
     }
   });
   return tiles;
 }
 
-// win check
-cells.forEach((cell, index) => {
-  cell.addEventListener('click', () => {
-    checkForWin();
-  });
-});
 function checkForWin() {
   setTimeout(function() {
     var gridList = []
-    cells.forEach((cell, index) => {
-      gridList.push(parseInt(cell.textContent))
+    $('#grid .grid-tile').each(function(index, tile) {
+      gridList.push(parseInt(tile.textContent))
     });
     //console.log(gridList)
     for (let i = 0; i < gridList.length - 1; i++) {
@@ -120,3 +126,44 @@ buttons.forEach((button, index) => {
     }, 80);
   });
 });
+
+// on slider change
+function changeBoardWidth(width) {
+  boardWidth = width;
+  $('#grid').empty()
+  for (var i = 0; i <= boardWidth*boardHeight-1; i++) {
+    if (i != boardWidth*boardHeight-1) {
+      var tileHtml = '<div class="grid-tile" id="tile-' + i + '">' + (i + 1) + '</div>';
+      $('#grid').append(tileHtml);
+    } else {
+      var tileHtml = '<div class="grid-tile" id="tile-' + i + '"></div>';
+      $('#grid').append(tileHtml);
+    }
+  }
+  emptyTileIndex = boardWidth*boardHeight-1;
+  $('#grid').css('grid-template-columns', 'repeat('+boardWidth+', 1fr)');
+  $('#grid').css('width', 100*boardWidth+15*(boardWidth-1)+'px');
+  addEventListeners();
+}
+function changeBoardHeight(height) {
+  boardHeight = height;
+  $('#grid').empty()
+  for (var i = 0; i <= boardWidth*boardHeight-1; i++) {
+    if (i != boardWidth*boardHeight-1) {
+      var tileHtml = '<div class="grid-tile" id="tile-' + i + '">' + (i + 1) + '</div>';
+      $('#grid').append(tileHtml);
+    } else {
+      var tileHtml = '<div class="grid-tile" id="tile-' + i + '"></div>';
+      $('#grid').append(tileHtml);
+    }
+  }
+  emptyTileIndex = boardWidth*boardHeight-1;
+  $('#grid').css('height', 100*boardHeight+15*(boardHeight-1)+'px');
+  addEventListeners();
+}
+function changeAnimationSpeed(speed) {
+  transitionTime = speed;
+}
+function changeMixAmount(amount) {
+  mixAmount = amount;
+}
