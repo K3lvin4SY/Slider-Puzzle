@@ -15,13 +15,6 @@ function addEventListeners() {
       }
     });
   });
-
-  // win check
-  $('#grid .grid-tile').each(function(index, tile) {
-    $(tile).on('click', function() {
-      checkForWin();
-    });
-  });
 }
 addEventListeners();
 
@@ -60,10 +53,12 @@ function slideTile(fromIndex, toIndex) {
     fromTile.style.top = '0';
 
     fromTile.style.pointerEvents = 'auto';
-
+    
+    console.log("Moved "+fromTile.textContent+" ("+fromIndex+")")
     const temp = fromTile.textContent;
     fromTile.textContent = toTile.textContent;
     toTile.textContent = temp;
+    checkForWin(); // completion check
   }, transitionTime);
 }
 
@@ -79,7 +74,6 @@ function mix(lastIndex = null, timeToLive = mixAmount) {
   slideTile(tile, emptyTileIndex);
   lastIndex = emptyTileIndex;
   emptyTileIndex = tile;
-  checkForWin();
   setTimeout(function() {
     mix(lastIndex, timeToLive-1)
   }, transitionTime);

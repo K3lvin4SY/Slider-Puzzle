@@ -17,17 +17,32 @@ function solve() {
     }
   })
   const startTime = new Date();
-  const moves = solvePuzzle(boardToSolve);
+  var [moves, indexMoves] = solvePuzzle(boardToSolve);
   const endTime = new Date();
   console.log(endTime-startTime+" ms");
   console.log(moves);
+  console.log(indexMoves);
+  moveTilesToSolve(indexMoves);
+}
+
+function moveTilesToSolve(indexMoves) {
+  if (indexMoves.length == 0) {
+    return; // all tiles have been moved and the puzzle should be solved
+  }
+  const indexMove = indexMoves.shift();
+  slideTile(indexMove, emptyTileIndex);
+  emptyTileIndex = indexMove;
+  setTimeout(function() {
+    moveTilesToSolve(indexMoves)
+  }, transitionTime);
 }
 
 class PuzzleNode {
-  constructor(board, parent, move, depth, similarity) {
+  constructor(board, parent, move, indexMove, depth, similarity) {
     this.board = board;  // current state of the puzzle
     this.parent = parent; // parent node
     this.move = move; // what moves that has been done
+    this.indexMove = indexMove; // what moves that has been done
     this.depth = depth; // Amount of moves made
     this.similarity = similarity; // amount of tiles that is in the correct location and order.
   }
@@ -38,12 +53,14 @@ class PuzzleNode {
 
   getPath() {
     const path = [];
+    const pathIndex = [];
     var node = this;
     while (node.parent !== null) {
       path.unshift(node.move);
+      pathIndex.unshift(node.indexMove);
       node = node.parent;
     }
-    return path
+    return [path, pathIndex]
   }
 }
 
@@ -84,7 +101,7 @@ function solvePuzzle(initialBoard) {
     return h;
   };
 
-  const initialNode = new PuzzleNode(initialBoard, null, null, 0, similarity(initialBoard));
+  const initialNode = new PuzzleNode(initialBoard, null, null, null, 0, similarity(initialBoard));
   openSet.push(initialNode);
 
   while (openSet.length > 0) {
@@ -128,7 +145,8 @@ function solvePuzzle(initialBoard) {
               clickedTile = tileValue;
             }
           })
-          const newNode = new PuzzleNode(newBoard, currentNode, clickedTile, currentNode.depth + 1, similarity(newBoard));
+          var indexMove = newY+boardWidth*newX
+          const newNode = new PuzzleNode(newBoard, currentNode, clickedTile, indexMove, currentNode.depth + 1, similarity(newBoard));
           openSet.push(newNode);
         }
       }
