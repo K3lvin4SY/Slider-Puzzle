@@ -65,6 +65,7 @@ class PuzzleNode {
 }
 
 function solvePuzzle(initialBoard) {
+  const startOfExecution = new Date();
   targetBoard = [];
   var columnCount = 0;
   for (let index = 1; index <= boardWidth*boardHeight; index++) {
@@ -87,24 +88,40 @@ function solvePuzzle(initialBoard) {
   const closedSet = new Set(); // contains nodes that has been explored
 
   function similarity(board) { // needs work by soriting more correctly
-    let h = 0;
-    for (let y = 0; y < boardWidth; y++) {
-      for (let x = 0; x < boardHeight; x++) {
+    let wrongMatch = 0;
+    let rightMatch = 0;
+    //console.log("----------------")
+    for (let x = 0; x < boardHeight; x++) {
+      for (let y = 0; y < boardWidth; y++) {
         //console.log(board)
         //console.log(targetBoard)
         //console.log("x: "+x, "y: "+y)
+        //console.log(targetBoard[x][y])
         if (board[x][y] !== targetBoard[x][y]) {
-          h++;
+          wrongMatch++;
         }
+        /*if (board[x][y] == targetBoard[x][y]) {
+          rightMatch++;
+        } else {
+          return boardWidth*boardHeight-rightMatch;
+        }*/
       }
     }
-    return h;
+    return wrongMatch;
   };
 
   const initialNode = new PuzzleNode(initialBoard, null, null, null, 0, similarity(initialBoard));
   openSet.push(initialNode);
 
   while (openSet.length > 0) {
+    const executionMidRuntime = new Date();
+    if (executionMidRuntime-startOfExecution > 12*1000) {
+      $('#error-message').text('Solving Algorithm stopped. Took too long...');
+      setTimeout(function() {
+        $('#error-message').text('');
+      }, 10*1000);
+      return;
+    }
     // sorting openSets to expolre the sets with more potential
     openSet.sort((a, b) => a.depth + a.similarity - (b.depth + b.similarity)); // smallest -> biggest number (number == depth + similarity)
     const currentNode = openSet.shift(); // returns openSet[0] and removes it from openSet

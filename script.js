@@ -54,7 +54,7 @@ function slideTile(fromIndex, toIndex) {
 
     fromTile.style.pointerEvents = 'auto';
     
-    console.log("Moved "+fromTile.textContent+" ("+fromIndex+")")
+    //console.log("Moved "+fromTile.textContent+" ("+fromIndex+")")
     const temp = fromTile.textContent;
     fromTile.textContent = toTile.textContent;
     toTile.textContent = temp;
