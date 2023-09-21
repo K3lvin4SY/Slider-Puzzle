@@ -12,13 +12,14 @@ function solve() {
     }
     textToParse = parseInt(textToParse);
     boardToSolve[boardToSolve.length - 1].push(textToParse);
-    if (columnCount == 4) {
+    if (columnCount == boardWidth) {
       columnCount = 0;
     }
   })
   const startTime = new Date();
   const moves = solvePuzzle(boardToSolve);
   const endTime = new Date();
+  console.log(endTime-startTime+" ms");
   console.log(moves);
 }
 
@@ -47,12 +48,28 @@ class PuzzleNode {
 }
 
 function solvePuzzle(initialBoard) {
-  const targetBoard = [
+  /*var targetBoard = [
     [1, 2, 3, 4],
     [5, 6, 7, 8],
     [9, 10, 11, 12],
     [13, 14, 15, 0], // 0 is the empty tile
-  ];
+  ];*/
+  targetBoard = [];
+  var columnCount = 0;
+  for (let index = 1; index <= boardWidth*boardHeight; index++) {
+    if (columnCount == 0) {
+      targetBoard.push([])
+    }
+    columnCount += 1;
+    var indexToDisplay = index;
+    if (indexToDisplay == boardWidth*boardHeight) {
+      indexToDisplay = 0;
+    }
+    targetBoard[targetBoard.length - 1].push(indexToDisplay);
+    if (columnCount == boardWidth) {
+      columnCount = 0;
+    }
+  }
   
   // initializes open and closed sets
   const openSet = []; // contains nodes that has not been fully explored yet
@@ -60,8 +77,11 @@ function solvePuzzle(initialBoard) {
 
   function similarity(board) { // needs work by soriting more correctly
     let h = 0;
-    for (let x = 0; x < 4; x++) {
-      for (let y = 0; y < 4; y++) {
+    for (let y = 0; y < boardWidth; y++) {
+      for (let x = 0; x < boardHeight; x++) {
+        //console.log(board)
+        //console.log(targetBoard)
+        //console.log("x: "+x, "y: "+y)
         if (board[x][y] !== targetBoard[x][y]) {
           h++;
         }
@@ -125,7 +145,7 @@ function solvePuzzle(initialBoard) {
 
 // checks if a pair of cordinates is inside the boundries of the grid
 function isValidPosition(x, y) {
-  return y >= 0 && y < 4 && x >= 0 && x < 4;
+  return y >= 0 && y < boardWidth && x >= 0 && x < boardHeight;
 }
 
 function copyBoard(board) {
@@ -133,8 +153,8 @@ function copyBoard(board) {
 }
 
 function findBlankPosition(board) {
-  for (let x = 0; x < 4; x++) {
-    for (let y = 0; y < 4; y++) {
+  for (let y = 0; y < boardWidth; y++) {
+    for (let x = 0; x < boardHeight; x++) {
       if (board[x][y] === 0) {
         return [x, y];
       }
