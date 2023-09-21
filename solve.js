@@ -48,12 +48,6 @@ class PuzzleNode {
 }
 
 function solvePuzzle(initialBoard) {
-  /*var targetBoard = [
-    [1, 2, 3, 4],
-    [5, 6, 7, 8],
-    [9, 10, 11, 12],
-    [13, 14, 15, 0], // 0 is the empty tile
-  ];*/
   targetBoard = [];
   var columnCount = 0;
   for (let index = 1; index <= boardWidth*boardHeight; index++) {
@@ -63,7 +57,7 @@ function solvePuzzle(initialBoard) {
     columnCount += 1;
     var indexToDisplay = index;
     if (indexToDisplay == boardWidth*boardHeight) {
-      indexToDisplay = 0;
+      indexToDisplay = 0; // insert empty spot in grid
     }
     targetBoard[targetBoard.length - 1].push(indexToDisplay);
     if (columnCount == boardWidth) {
