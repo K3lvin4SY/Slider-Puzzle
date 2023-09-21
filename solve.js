@@ -1,3 +1,27 @@
+function solve() {
+  var columnCount = 0
+  boardToSolve = [];
+  $('#grid').children().each(function() {
+    if (columnCount == 0) {
+      boardToSolve.push([])
+    }
+    columnCount += 1;
+    var textToParse = $(this).text()
+    if (textToParse == "") {
+      textToParse = "0"
+    }
+    textToParse = parseInt(textToParse);
+    boardToSolve[boardToSolve.length - 1].push(textToParse);
+    if (columnCount == 4) {
+      columnCount = 0;
+    }
+  })
+  const startTime = new Date();
+  const moves = solvePuzzle(boardToSolve);
+  const endTime = new Date();
+  console.log(moves);
+}
+
 class PuzzleNode {
   constructor(board, parent, move, depth, similarity) {
     this.board = board;  // current state of the puzzle
@@ -18,7 +42,7 @@ class PuzzleNode {
       path.unshift(node.move);
       node = node.parent;
     }
-    return path; 
+    return path
   }
 }
 
@@ -60,7 +84,7 @@ function solvePuzzle(initialBoard) {
     }
 
     // Y = Rows   =
-    // X = Colums ||
+    // X = Columns ||
     const [blankX, blankY] = findBlankPosition(currentNode.board);
 
     const moves = [
@@ -80,7 +104,17 @@ function solvePuzzle(initialBoard) {
         [newBoard[blankX][blankY], newBoard[newX][newY]] = [newBoard[newX][newY], newBoard[blankX][blankY]];
 
         if (!closedSet.has(JSON.stringify(newBoard))) { // if newly created board timestamp hasn't already been explored
-          const newNode = new PuzzleNode(newBoard, currentNode, move, currentNode.depth + 1, similarity(newBoard));
+          var clickedTile = null;
+          $('.grid-tile').each(function() {
+            var tileValue = newBoard[blankX][blankY]+""
+            if (newBoard[blankX][blankY] == 0) {
+              tileValue = "0"
+            }
+            if($(this).text() == tileValue) {
+              clickedTile = tileValue;
+            }
+          })
+          const newNode = new PuzzleNode(newBoard, currentNode, clickedTile, currentNode.depth + 1, similarity(newBoard));
           openSet.push(newNode);
         }
       }
@@ -108,6 +142,7 @@ function findBlankPosition(board) {
   }
 }
 
+/*
 const initialBoard2 = [
   [1, 2, 4, 8],
   [10, 5, 0, 6],
@@ -120,4 +155,4 @@ if (solution) {
   console.log(solution.length);
 } else {
   console.log('No solution found.');
-}
+}*/
